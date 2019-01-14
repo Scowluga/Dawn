@@ -1,11 +1,8 @@
 package com.scowluga.android.dawn
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.provider.Settings
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -39,29 +36,28 @@ class MainActivity : AppCompatActivity() {
             val nextAlarm = Settings.System.getString(getContentResolver(),
                     Settings.System.NEXT_ALARM_FORMATTED)
             if (nextAlarm.isEmpty())
-                nextTV.setText("Next Alarm: N/A")
+                nextTV.text = "Next Alarm: N/A"
             else
-                nextTV.setText("Next Alarm: " + nextAlarm)
+                nextTV.text = "Next Alarm: $nextAlarm"
         })
         refreshBtn.performClick()
 
         // Toggle Button
         val toggle: CustomToggleButton = findViewById(R.id.toggleButton)
-        toggle.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+        toggle.setOnCheckedChangeListener({ buttonView, isChecked ->
             refreshBtn.performClick()
             if (isChecked) { // ON
                 val layout: LinearLayout = findViewById(R.id.alarm_ll)
-                for (i in 0 until layout.childCount) {
-                    val child = layout.getChildAt(i)
-                    child.isEnabled = true
-                }
+                (0 until layout.childCount)
+                        .map { layout.getChildAt(it) }
+                        .forEach {it.isEnabled = true}
                 displayError(this)
             } else { // OFF
                 val layout: LinearLayout = findViewById(R.id.alarm_ll)
-                for (i in 0 until layout.childCount) {
-                    val child = layout.getChildAt(i)
-                    child.isEnabled = false
-                }
+                (0 until layout.childCount)
+                        .map {layout.getChildAt(it)}
+                        .forEach {it.isEnabled = false}
+
                 Toast.makeText(this, "Blind Opening Cancelled", Toast.LENGTH_SHORT).show()
             }
         })
