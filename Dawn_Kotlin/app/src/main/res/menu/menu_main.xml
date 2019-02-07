@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.scowluga.android.dawn.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_receiver"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Open Receiver Activity"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sender"
+        android:orderInCategory="100"
+        android:title="Open Sender Activity"
         app:showAsAction="never" />
 </menu>

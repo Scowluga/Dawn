@@ -1,6 +1,9 @@
 package com.scowluga.android.dawn
 
 import android.app.Activity
+import android.content.Intent
+import android.nfc.NfcAdapter
+import android.nfc.tech.NfcA
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
@@ -61,7 +64,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Blind Opening Cancelled", Toast.LENGTH_SHORT).show()
             }
         })
-
     }
 
     override fun onResume() {
@@ -79,9 +81,18 @@ class MainActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        when {
+            item.itemId == R.id.action_sender -> {
+                // Open Sender Activity
+                val intent = Intent(this@MainActivity, SenderActivity::class.java)
+                startActivity(intent)
+            }
+            item.itemId == R.id.action_receiver -> {
+                // Start Receiver Activity
+                val intent = Intent(this@MainActivity, ReceiverActivity::class.java)
+                startActivity(intent)
+            }
         }
+        return true
     }
 }
