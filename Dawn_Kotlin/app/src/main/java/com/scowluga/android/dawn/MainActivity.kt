@@ -1,7 +1,9 @@
 package com.scowluga.android.dawn
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.nfc.NfcAdapter
 import android.nfc.tech.NfcA
 import android.os.Bundle
@@ -17,6 +19,20 @@ import me.rishabhkhanna.customtogglebutton.CustomToggleButton
 
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        var player: MediaPlayer? = null
+        var isPlaying: Boolean = false
+        fun toggleMedia(c: Context) {
+            if (isPlaying) {
+                player?.stop()
+                isPlaying = false
+            } else {
+                player = MediaPlayer.create(c, R.raw.alarm)
+                player?.start()
+                isPlaying = true
+            }
+        }
+    }
 
     fun displayError(a: Activity) {
         Toast.makeText(a, "Please Connect to Dawn Device", Toast.LENGTH_SHORT).show()
@@ -84,12 +100,12 @@ class MainActivity : AppCompatActivity() {
         when {
             item.itemId == R.id.action_sender -> {
                 // Open Sender Activity
-                val intent = Intent(this@MainActivity, BeamActivity::class.java)
+                val intent = Intent(this@MainActivity, SenderActivity::class.java)
                 startActivity(intent)
             }
             item.itemId == R.id.action_receiver -> {
                 // Start Receiver Activity
-                val intent = Intent(this@MainActivity, BeamActivity::class.java)
+                val intent = Intent(this@MainActivity, ReceiverActivity::class.java)
                 startActivity(intent)
             }
         }

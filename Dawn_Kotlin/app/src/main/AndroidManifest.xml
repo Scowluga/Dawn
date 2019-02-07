@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SenderActivity" />
-        <activity android:name=".BeamActivity">
+        <activity android:name=".ReceiverActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
@@ -32,8 +32,6 @@
 
                 <data android:mimeType="application/vnd.com.scowluga.android.dawn" />
             </intent-filter>
-        </activity>
-        <activity android:name=".ReceiverActivity">
         </activity>
 
     </application>

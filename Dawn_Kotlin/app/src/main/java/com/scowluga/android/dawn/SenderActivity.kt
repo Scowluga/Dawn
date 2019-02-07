@@ -6,48 +6,42 @@ import android.nfc.NfcAdapter
 import android.nfc.NfcEvent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.TextView
 import android.widget.Toast
 
-class SenderActivity : AppCompatActivity(), OutcomingNfcManager.NfcActivity {
+class SenderActivity : AppCompatActivity(), NfcAdapter.CreateNdefMessageCallback {
 
-    override fun getOutcomingMessage(): String =
-            "WHEE"
-
-
-    override fun signalResult() {
-        // this will be triggered when NFC message is sent to a device.
-        // should be triggered on UI thread. We specify it explicitly
-        // cause onNdefPushComplete is called from the Binder thread
-        runOnUiThread {
-            Toast.makeText(this, "DONE", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private var nfcAdapter: NfcAdapter? = null
-    private lateinit var textView: TextView
-
+    private var mNfcAdapter: NfcAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sender)
 
-        textView = findViewById(R.id.senderTV)
-
-
-        // Setting up NFC
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-        if (nfcAdapter == null) {
-            Toast.makeText(this, "NFC is not available", Toast.LENGTH_SHORT).show()
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        if (mNfcAdapter == null) {
+            Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show()
             finish()
+            return
         }
 
-        if (!nfcAdapter?.isEnabled!!) {
-            Toast.makeText(this, "NFC is currently disabled, please turn on", Toast.LENGTH_SHORT).show()
-            finish()
-        }
+        mNfcAdapter?.setNdefPushMessageCallback(this, this)
 
-        val outcomingNfcCallback = OutcomingNfcManager(this)
-        this.nfcAdapter?.setOnNdefPushCompleteCallback(outcomingNfcCallback, this)
-        this.nfcAdapter?.setNdefPushMessageCallback(outcomingNfcCallback, this)    }
+    }
+
+    override fun createNdefMessage(event: NfcEvent): NdefMessage {
+        val text = "Beam me up, Android!\n\n" +
+                "Beam Time: " + System.currentTimeMillis()
+        return NdefMessage(
+                arrayOf(
+                        NdefRecord.createMime("application/vnd.com.scowluga.android.dawn", text.toByteArray())
+                )
+                /**
+                 * The Android Application Record (AAR) is commented out. When a device
+                 * receives a push with an AAR in it, the application specified in the AAR
+                 * is guaranteed to run. The AAR overrides the tag dispatch system.
+                 * You can add it back in to guarantee that this
+                 * activity starts when receiving a beamed message. For now, this code
+                 * uses the tag dispatch system.
+                 *///,NdefRecord.createApplicationRecord("com.example.android.beam")
+        )
+    }
 }
