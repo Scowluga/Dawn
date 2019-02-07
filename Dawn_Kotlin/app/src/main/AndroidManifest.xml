@@ -3,6 +3,7 @@
     package="com.scowluga.android.dawn">
 
     <uses-permission android:name="android.permission.NFC" />
+
     <uses-feature android:name="android.hardware.nfc" />
 
     <application
@@ -23,13 +24,18 @@
             </intent-filter>
         </activity>
         <activity android:name=".SenderActivity" />
-        <activity android:name=".ReceiverActivity">
+        <activity android:name=".BeamActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/com.scowluga.android.dawn" />
+
+                <data android:mimeType="application/vnd.com.scowluga.android.dawn" />
             </intent-filter>
         </activity>
+        <activity android:name=".ReceiverActivity">
+        </activity>
+
     </application>
 
 </manifest>

@@ -6,9 +6,11 @@ import android.nfc.NfcAdapter
 import android.nfc.NfcEvent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.TextView
 import android.widget.Toast
 
 class SenderActivity : AppCompatActivity(), OutcomingNfcManager.NfcActivity {
+
     override fun getOutcomingMessage(): String =
             "WHEE"
 
@@ -22,11 +24,16 @@ class SenderActivity : AppCompatActivity(), OutcomingNfcManager.NfcActivity {
         }
     }
 
-    var nfcAdapter: NfcAdapter? = null
+    private var nfcAdapter: NfcAdapter? = null
+    private lateinit var textView: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sender)
+
+        textView = findViewById(R.id.senderTV)
+
 
         // Setting up NFC
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)

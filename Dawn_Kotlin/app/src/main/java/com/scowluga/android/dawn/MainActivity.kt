@@ -84,12 +84,12 @@ class MainActivity : AppCompatActivity() {
         when {
             item.itemId == R.id.action_sender -> {
                 // Open Sender Activity
-                val intent = Intent(this@MainActivity, SenderActivity::class.java)
+                val intent = Intent(this@MainActivity, BeamActivity::class.java)
                 startActivity(intent)
             }
             item.itemId == R.id.action_receiver -> {
                 // Start Receiver Activity
-                val intent = Intent(this@MainActivity, ReceiverActivity::class.java)
+                val intent = Intent(this@MainActivity, BeamActivity::class.java)
                 startActivity(intent)
             }
         }
