@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
+import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.tech.NfcA
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -34,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private var mNfcAdapter: NfcAdapter? = null
+
     fun displayError(a: Activity) {
         Toast.makeText(a, "Please Connect to Dawn Device", Toast.LENGTH_SHORT).show()
     }
@@ -47,6 +51,14 @@ class MainActivity : AppCompatActivity() {
 
         // set status bar transparent for parallax toolbar
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+
+        // NFC
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        if (mNfcAdapter == null) {
+            Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
 
         // Refresh Next Alarm
         val nextTV: TextView = findViewById(R.id.nextTV)
@@ -85,6 +97,31 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         refreshBtn.performClick()
+
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
+            processIntent(intent)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        // onResume gets called after this to handle the intent
+        setIntent(intent)
+    }
+
+    /**
+     * Parses the NDEF Message from the intent and prints to the TextView
+     */
+    private fun processIntent(intent: Intent) {
+        // only one message sent during the beam
+        intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMsgs ->
+            (rawMsgs[0] as NdefMessage).apply {
+                // record 0 contains the MIME type, record 1 is the AAR, if present
+                val message = String(records[0].payload)
+                Log.d("TAG", message)
+                MainActivity.toggleMedia(this@MainActivity)
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -103,10 +140,9 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, SenderActivity::class.java)
                 startActivity(intent)
             }
-            item.itemId == R.id.action_receiver -> {
+            item.itemId == R.id.action_alarm -> {
                 // Start Receiver Activity
-                val intent = Intent(this@MainActivity, ReceiverActivity::class.java)
-                startActivity(intent)
+                toggleMedia(this@MainActivity)
             }
         }
         return true

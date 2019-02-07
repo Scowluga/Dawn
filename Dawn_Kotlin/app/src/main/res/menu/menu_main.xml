@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.scowluga.android.dawn.MainActivity">
     <item
-        android:id="@+id/action_receiver"
+        android:id="@+id/action_alarm"
         android:orderInCategory="100"
-        android:title="Open Receiver Activity"
+        android:title="Start Alarm"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_sender"
